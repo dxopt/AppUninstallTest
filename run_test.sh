@@ -6,7 +6,8 @@ echo ">> Build the app..."
 echo ">> Prepare for test. Uninstall the app if installed..."
 adb uninstall me.ycdev.android.demo.appuninstalltest 1>/dev/null 2>/dev/null
 
-SLEEP_SECONDS=20
+FILES_COUNT=5000
+SLEEP_SECONDS=60
 MAX_COUNT=60
 count=1
 
@@ -20,7 +21,7 @@ while [ $count -le $MAX_COUNT ] ; do
         exit 1
     fi
 
-    adb shell am start -n "me.ycdev.android.demo.appuninstalltest/me.ycdev.android.demo.appuninstalltest.MainActivity" --ez test.auto true
+    adb shell am start -n "me.ycdev.android.demo.appuninstalltest/me.ycdev.android.demo.appuninstalltest.MainActivity" --ez test.auto true --ei files.count $FILES_COUNT
     echo "++ Sleeping...$SLEEP_SECONDS seconds"
     sleep $SLEEP_SECONDS
 
@@ -32,4 +33,3 @@ while [ $count -le $MAX_COUNT ] ; do
 
     count=`expr $count + 1`
 done
-

@@ -14,10 +14,14 @@ public class MainActivity extends ActionBarActivity {
     private static final String TAG = "AppUninstallTest";
 
     private static final String EXTRA_TEST_AUTO = "test.auto";
+    private static final String EXTRA_FILES_COUNT = "files.count";
+
+    private static final int DEFAULT_FILES_COUNT = 1000;
 
     private Button mTestBtn;
 
     private static boolean sIsTesting;
+    private int mFilesCount = DEFAULT_FILES_COUNT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +29,11 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         boolean autoTest = getIntent().getBooleanExtra(EXTRA_TEST_AUTO, false);
-        Log.d(TAG, "enter app: " + autoTest);
+        mFilesCount = getIntent().getIntExtra(EXTRA_FILES_COUNT, DEFAULT_FILES_COUNT);
+        Log.d(TAG, "enter app: " + autoTest + ", files count: " + mFilesCount);
 
         if (!sIsTesting && autoTest) {
-            startTest(getApplicationContext());
+            startTest(getApplicationContext(), mFilesCount);
         }
 
         mTestBtn = (Button) findViewById(R.id.start_test);
@@ -36,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (!sIsTesting) {
-                    startTest(getApplicationContext());
+                    startTest(getApplicationContext(), mFilesCount);
                 } else {
                     stopTest();
                 }
@@ -76,14 +81,14 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private static void startTest(final Context appContext) {
+    private static void startTest(final Context appContext, final int filesCount) {
         sIsTesting = true;
         new Thread("Test") {
             @Override
             public void run() {
                 int i = 0;
                 while (sIsTesting) {
-                    if (i > 1000) {
+                    if (i > filesCount) {
                         Log.d(TAG, "go back: " + Thread.currentThread().getId());
                         i = 0;
                     }
